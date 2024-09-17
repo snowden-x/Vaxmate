@@ -2,6 +2,7 @@ import { openDB, DBSchema } from 'idb';
 import { v4 as uuidv4 } from 'uuid';
 
 
+
 interface VaccineSchedulerDB extends DBSchema {
     children: {
         key: string;
@@ -33,13 +34,25 @@ const dbPromise = openDB<VaccineSchedulerDB>('vaccine-scheduler', 1, {
 
 export function calculateVaccineDates(dateOfBirth: string): Array<{ visitNumber: number; date: string; vaccines: string[] }> {
     const dob = new Date(dateOfBirth);
+    const addWeeks = (date: Date, weeks: number) => {
+        const newDate = new Date(date);
+        newDate.setDate(newDate.getDate() + weeks * 7);
+        return newDate;
+    };
+    const addMonths = (date: Date, months: number) => {
+        const newDate = new Date(date);
+        newDate.setMonth(newDate.getMonth() + months);
+        return newDate;
+    };
+    const formatDate = (date: Date) => date.toISOString().split('T')[0];
+
     return [
-        { visitNumber: 1, date: dob.toISOString().split('T')[0], vaccines: ['BCG', 'OPV-0'] },
-        { visitNumber: 2, date: new Date(dob.getTime() + 6 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], vaccines: ['OPV-1', 'Penta-1', 'PCV-1', 'Rotavirus vaccine-1'] },
-        { visitNumber: 3, date: new Date(dob.getTime() + 10 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], vaccines: ['OPV-2', 'Penta-2', 'PCV-2', 'Rotavirus vaccine-2'] },
-        { visitNumber: 4, date: new Date(dob.getTime() + 14 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], vaccines: ['OPV-3', 'Penta-3', 'PCV-3'] },
-        { visitNumber: 5, date: new Date(dob.getTime() + 9 * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], vaccines: ['Measles-Rubella (MR)', 'Yellow Fever'] },
-        { visitNumber: 6, date: new Date(dob.getTime() + 18 * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], vaccines: ['Measles-Rubella (MR)', 'Meningococcal A conjugate (Men A)'] },
+        { visitNumber: 1, date: formatDate(dob), vaccines: ['BCG', 'OPV-0'] },
+        { visitNumber: 2, date: formatDate(addWeeks(dob, 6)), vaccines: ['OPV-1', 'Penta-1', 'PCV-1', 'Rotavirus vaccine-1'] },
+        { visitNumber: 3, date: formatDate(addWeeks(dob, 10)), vaccines: ['OPV-2', 'Penta-2', 'PCV-2', 'Rotavirus vaccine-2'] },
+        { visitNumber: 4, date: formatDate(addWeeks(dob, 14)), vaccines: ['OPV-3', 'Penta-3', 'PCV-3'] },
+        { visitNumber: 5, date: formatDate(addMonths(dob, 9)), vaccines: ['Measles-Rubella (MR)', 'Yellow Fever'] },
+        { visitNumber: 6, date: formatDate(addMonths(dob, 18)), vaccines: ['Measles-Rubella (MR) II', 'Meningococcal A conjugate (Men A)'] },
     ];
 }
 

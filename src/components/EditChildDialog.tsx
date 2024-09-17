@@ -54,7 +54,7 @@ export default function EditChildDialog({ isOpen, onClose, onChildUpdated, child
             <Dialog open={isOpen} onOpenChange={onClose}>
                 <DialogContent className='bg-white'>
                     <DialogHeader>
-                        <DialogTitle>Edit Child Details</DialogTitle>
+                        <DialogTitle>Edit Patient Details</DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleSubmit}>
                         <div className="grid gap-4 py-4">
@@ -66,7 +66,7 @@ export default function EditChildDialog({ isOpen, onClose, onChildUpdated, child
                                     id="name"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="col-span-3"
+                                    className="col-span-3 capitalize"
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
@@ -83,7 +83,7 @@ export default function EditChildDialog({ isOpen, onClose, onChildUpdated, child
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button type="submit">Update Child</Button>
+                            <Button type="submit">Update</Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>

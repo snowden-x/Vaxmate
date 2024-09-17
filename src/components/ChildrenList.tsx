@@ -270,7 +270,7 @@ export default function ChildrenList({ children, schedules, refreshData }: Child
                         {paginatedChildren.map((child) => (
                             <Card key={child.id}>
                                 <CardHeader className='flex flex-row justify-between'>
-                                    <CardTitle className='font-medium'>{child.name}</CardTitle>
+                                    <CardTitle className='font-medium capitalize'>{child.name}</CardTitle>
                                     <Badge variant="outline" className='border-green-500 flex items-center justify-center rounded-full'>
                                         <CardTitle className='font-medium text-xs'>{getCompletedImmunizations(child.id)}</CardTitle>
                                     </Badge>

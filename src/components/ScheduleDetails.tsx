@@ -130,7 +130,7 @@ export function ScheduleDetails({ childId, childName, dateOfBirth , refreshData}
             ws['!cols'] = [
                 { wch: 15 },  // Visit
                 { wch: 12 },  // Date
-                { wch: 50 },  // Vaccines
+                { wch: 52 },  // Vaccines
                 { wch: 20 }   // Status
             ];
             const wb = XLSX.utils.book_new();
@@ -147,7 +147,7 @@ export function ScheduleDetails({ childId, childName, dateOfBirth , refreshData}
             <DialogContent className="max-w-4xl max-h-[80vh] bg-white overflow-y-auto">
                 <DialogHeader>
                     <div className="flex justify-between items-center">
-                        <DialogTitle>{childName}'s Vaccination Schedule</DialogTitle>
+                        <DialogTitle><span className='capitalize'>{childName}</span>'s Vaccination Schedule</DialogTitle>
                         <ExportButton onExport={handleExport} />
                     </div>
                 </DialogHeader>
