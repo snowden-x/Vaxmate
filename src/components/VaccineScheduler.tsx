@@ -1,8 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { getAllChildren, getSchedule, getAllSchedules } from '@/lib/db';
-import AddChildDialog from '@/components/AddChildDialog';
+import { getAllChildren, getAllSchedules } from '@/lib/db';
 import ChildrenList from './ChildrenList';
 
 interface Child {
@@ -21,7 +19,7 @@ interface Schedule {
 }
 
 export default function VaccineScheduler() {
-  const [children, setChildren] = useState<Child[]>([]);
+  const [patients, setPatients] = useState<Child[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
 
   useEffect(() => {
@@ -29,9 +27,9 @@ export default function VaccineScheduler() {
   }, []);
 
   async function loadData() {
-    const allChildren = await getAllChildren();
+    const allPatients = await getAllChildren();
     const allSchedules = await getAllSchedules();
-    setChildren(allChildren);
+    setPatients(allPatients);
     setSchedules(allSchedules);
   }
 
@@ -41,7 +39,11 @@ export default function VaccineScheduler() {
 
   return (
     <div className="p-4">
-      <ChildrenList children={children} schedules={schedules} refreshData={refreshData} />
+      <ChildrenList
+        patients={patients}
+        schedules={schedules}
+        refreshData={refreshData}
+      />
     </div>
   );
 }

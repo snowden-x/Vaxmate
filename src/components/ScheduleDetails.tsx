@@ -27,7 +27,7 @@ type ScheduleDetailsProps = {
     refreshData: () => void
 }
 
-export function ScheduleDetails({ childId, childName, dateOfBirth , refreshData}: ScheduleDetailsProps) {
+export function ScheduleDetails({ childId, childName, refreshData}: ScheduleDetailsProps) {
     const [schedule, setSchedule] = useState<Visit[]>([])
     const [open, setOpen] = useState(false)
 
@@ -105,7 +105,7 @@ export function ScheduleDetails({ childId, childName, dateOfBirth , refreshData}
         if (format === 'pdf') {
             const doc = new jsPDF();
             doc.text(`${childName}'s Vaccination Schedule`, 14, 10);
-            //@ts-ignore
+            //@ts-expect-error: jsPDF types are not fully compatible with autoTable
             doc.autoTable({
                 head: [['Visit', 'Date', 'Vaccines', 'Status']],
 
@@ -147,7 +147,7 @@ export function ScheduleDetails({ childId, childName, dateOfBirth , refreshData}
             <DialogContent className="max-w-4xl max-h-[80vh] bg-white overflow-y-auto">
                 <DialogHeader>
                     <div className="flex justify-between items-center">
-                        <DialogTitle><span className='capitalize'>{childName}</span>'s Vaccination Schedule</DialogTitle>
+                        <DialogTitle><span className='capitalize'>{childName}</span>&apos;s Vaccination Schedule</DialogTitle>
                         <ExportButton onExport={handleExport} />
                     </div>
                 </DialogHeader>

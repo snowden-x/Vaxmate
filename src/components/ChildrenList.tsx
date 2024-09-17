@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Search01Icon, Calendar03Icon, ArrowLeft01Icon, ArrowRight01Icon, AlertCircleIcon, Tick01Icon, Sorting01Icon, FileEditIcon, UserRemove01Icon, UserAdd01Icon, Cancel01Icon } from 'hugeicons-react'
+import { Search01Icon, Calendar03Icon, ArrowLeft01Icon, ArrowRight01Icon, Tick01Icon, Sorting01Icon, FileEditIcon, UserRemove01Icon, UserAdd01Icon, Cancel01Icon } from 'hugeicons-react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -41,12 +41,12 @@ type Schedule = {
 type SortOption = 'name' | 'dob' | 'nextVaccine'
 
 interface ChildrenListProps {
-    children: Child[];
+    patients: Child[];
     schedules: Schedule[];
     refreshData: () => void;
 }
 
-export default function ChildrenList({ children, schedules, refreshData }: ChildrenListProps) {
+export default function ChildrenList({ patients, schedules, refreshData }: ChildrenListProps) {
     const [searchQuery, setSearchQuery] = useState('')
     const [sortBy, setSortBy] = useState<SortOption>('name')
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
@@ -96,9 +96,9 @@ export default function ChildrenList({ children, schedules, refreshData }: Child
         return `${completed}/${total}`
     }
 
-    const filterByDateRange = (children: Child[]) => {
-        if (!fromDate && !toDate) return children;
-        return children.filter(child => {
+    const filterByDateRange = (patients: Child[]) => {
+        if (!fromDate && !toDate) return patients;
+        return patients.filter(child => {
             const nextVaccination = getNextVaccinationDate(child.id);
             if (nextVaccination === 'Completed' || nextVaccination === 'Not scheduled') return false;
             const vaccinationDate = new Date(nextVaccination);
@@ -113,7 +113,7 @@ export default function ChildrenList({ children, schedules, refreshData }: Child
         });
     };
 
-    const filteredChildren = filterByDateRange(children.filter(child =>
+    const filteredChildren = filterByDateRange(patients.filter(child =>
         child.name.toLowerCase().includes(searchQuery.toLowerCase())
     ));
 
@@ -177,8 +177,8 @@ export default function ChildrenList({ children, schedules, refreshData }: Child
                     <CardTitle>Summary</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p>Total Children: {children.length}</p>
-                    <p>Children Needing Vaccination: {children.filter(child => getNextVaccinationDate(child.id) !== 'All vaccines completed').length}</p>
+                    <p>Total Children: {patients.length}</p>
+                    <p>Children Needing Vaccination: {patients.filter(child => getNextVaccinationDate(child.id) !== 'All vaccines completed').length}</p>
                 </CardContent>
             </Card>
 

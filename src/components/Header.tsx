@@ -1,10 +1,8 @@
 "use client"
-import { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from 'next/link'
 
 export default function Header() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     return (
         <header className="rounded-lg top-0 sticky z-50 bg-white/50 shadow-md backdrop-blur-md border mx-20 py-0 text-secondary-foreground">

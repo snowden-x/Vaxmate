@@ -1,7 +1,6 @@
-import { openDB, DBSchema } from 'idb';
+"use client"
+import { openDB, DBSchema, IDBPDatabase } from 'idb';
 import { v4 as uuidv4 } from 'uuid';
-
-
 
 interface VaccineSchedulerDB extends DBSchema {
     children: {
@@ -25,12 +24,19 @@ interface VaccineSchedulerDB extends DBSchema {
     };
 }
 
-const dbPromise = openDB<VaccineSchedulerDB>('vaccine-scheduler', 1, {
-    upgrade(db) {
-        db.createObjectStore('children', { keyPath: 'id' });
-        db.createObjectStore('schedules', { keyPath: 'childId' });
-    },
-});
+let dbPromise: Promise<IDBPDatabase<VaccineSchedulerDB>> | undefined;
+
+function getDB() {
+    if (!dbPromise) {
+        dbPromise = openDB<VaccineSchedulerDB>('vaccine-scheduler', 1, {
+            upgrade(db) {
+                db.createObjectStore('children', { keyPath: 'id' });
+                db.createObjectStore('schedules', { keyPath: 'childId' });
+            },
+        });
+    }
+    return dbPromise;
+}
 
 export function calculateVaccineDates(dateOfBirth: string): Array<{ visitNumber: number; date: string; vaccines: string[] }> {
     const dob = new Date(dateOfBirth);
@@ -57,7 +63,7 @@ export function calculateVaccineDates(dateOfBirth: string): Array<{ visitNumber:
 }
 
 export async function addChild(name: string, dateOfBirth: string) {
-    const db = await dbPromise;
+    const db = await getDB();
     const id = uuidv4();
     await db.add('children', { id, name, dateOfBirth });
     
@@ -68,45 +74,43 @@ export async function addChild(name: string, dateOfBirth: string) {
 }
 
 export async function getChild(id: string) {
-    const db = await dbPromise;
+    const db = await getDB();
     return db.get('children', id);
 }
 
 export async function getAllChildren() {
-    const db = await dbPromise;
+    const db = await getDB();
     return db.getAll('children');
 }
 
 export async function addSchedule(childId: string, visits: Array<{ visitNumber: number; date: string; vaccines: string[] }>) {
-    const db = await dbPromise;
+    const db = await getDB();
     await db.put('schedules', { childId, visits });
 }
 
 export async function getSchedule(childId: string) {
-    const db = await dbPromise;
+    const db = await getDB();
     return db.get('schedules', childId);
 }
 
 export async function updateSchedule(childId: string, visits: Array<{ visitNumber: number; date: string; vaccines: string[] }>) {
-    const db = await dbPromise;
+    const db = await getDB();
     await db.put('schedules', { childId, visits });
 }
 
-// New functions to add:
-
 export async function updateChild(id: string, name: string, dateOfBirth: string) {
-    const db = await dbPromise;
+    const db = await getDB();
     await db.put('children', { id, name, dateOfBirth });
 }
 
 export async function deleteChild(id: string) {
-    const db = await dbPromise;
+    const db = await getDB();
     await db.delete('children', id);
     await db.delete('schedules', id);  // Also delete associated schedule
 }
 
 export async function searchChildren(query: string) {
-    const db = await dbPromise;
+    const db = await getDB();
     const allChildren = await db.getAll('children');
     return allChildren.filter(child => 
         child.name.toLowerCase().includes(query.toLowerCase())
@@ -114,11 +118,11 @@ export async function searchChildren(query: string) {
 }
 
 export async function getAllSchedules() {
-    const db = await dbPromise;
+    const db = await getDB();
     return db.getAll('schedules');
 }
 
 export async function deleteSchedule(childId: string) {
-    const db = await dbPromise;
+    const db = await getDB();
     await db.delete('schedules', childId);
 }
